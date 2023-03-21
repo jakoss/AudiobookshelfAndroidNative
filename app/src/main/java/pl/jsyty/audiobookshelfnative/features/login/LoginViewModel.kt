@@ -1,4 +1,4 @@
-package pl.jsyty.audiobookshelfnative.login
+package pl.jsyty.audiobookshelfnative.features.login
 
 import org.koin.android.annotation.KoinViewModel
 import org.orbitmvi.orbit.syntax.simple.intent

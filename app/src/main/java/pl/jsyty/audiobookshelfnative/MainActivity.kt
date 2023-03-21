@@ -16,8 +16,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
-import pl.jsyty.audiobookshelfnative.login.LoginScreen
-import pl.jsyty.audiobookshelfnative.tabs.TabsScreen
+import pl.jsyty.audiobookshelfnative.features.login.LoginScreen
+import pl.jsyty.audiobookshelfnative.features.tabs.TabsScreen
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
 class MainActivity : ComponentActivity() {

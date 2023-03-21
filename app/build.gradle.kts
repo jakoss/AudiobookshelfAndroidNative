@@ -70,6 +70,7 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
     val media3Version = "1.0.0-rc02"
     implementation("androidx.media3:media3-exoplayer:$media3Version")
@@ -104,6 +105,8 @@ dependencies {
     implementation("org.orbit-mvi:orbit-compose:$orbitMviVersion")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
+
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

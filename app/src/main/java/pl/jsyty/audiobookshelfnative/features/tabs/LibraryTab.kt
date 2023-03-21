@@ -1,4 +1,4 @@
-package pl.jsyty.audiobookshelfnative.tabs
+package pl.jsyty.audiobookshelfnative.features.tabs
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home

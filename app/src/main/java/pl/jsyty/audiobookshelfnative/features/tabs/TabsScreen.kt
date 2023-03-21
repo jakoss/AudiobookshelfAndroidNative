@@ -1,4 +1,4 @@
-package pl.jsyty.audiobookshelfnative.tabs
+package pl.jsyty.audiobookshelfnative.features.tabs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
