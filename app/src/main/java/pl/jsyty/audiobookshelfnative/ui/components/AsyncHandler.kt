@@ -1,11 +1,13 @@
 package pl.jsyty.audiobookshelfnative.ui.components
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import pl.jsyty.audiobookshelfnative.core.*
 
 /**
- * Adds a fullscreen handler for whole [Async] states.
+ * Adds a fullscreen handler for all [Async] states when loading resource that's needed to display success state.
  * This handler is specialized for components that should take whole available space.
  * Fullscreen components are basically "fillMaxSize"
  *
@@ -31,6 +33,30 @@ fun <T> FullscreenAsyncHandler(
             is Loading -> loading()
             is Fail -> error(it.error)
             is Success -> success(it())
+        }
+    }
+}
+
+/**
+ * Adds a fullscreen handler for [Async] loading state.
+ * This handler is specialized for components that should take whole available space.
+ * Fullscreen components are basically "fillMaxSize"
+ *
+ * @param state State to be handled
+ * @param loading Component for loading state. Defaults to [FullscreenLoader]
+ * @param content Content displayed in uninitialized and success modes
+ */
+@Composable
+fun <T> FullscreenLoadingAsyncHandler(
+    state: Async<T>,
+    modifier: Modifier = Modifier,
+    loading: @Composable () -> Unit = { FullscreenLoader() },
+    content: @Composable () -> Unit,
+) {
+    Box(modifier) {
+        content()
+        AnimatedVisibility(visible = state is Loading, enter = fadeIn(), exit = fadeOut()) {
+            loading()
         }
     }
 }

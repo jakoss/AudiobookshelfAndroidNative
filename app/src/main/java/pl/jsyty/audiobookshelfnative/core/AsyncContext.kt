@@ -1,8 +1,10 @@
 package pl.jsyty.audiobookshelfnative.core
 
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ensureActive
 import org.orbitmvi.orbit.syntax.simple.*
 import timber.log.Timber
+import kotlin.coroutines.coroutineContext
 
 /**
  * This will handle the [Async] state during an asynchronous call.
@@ -13,6 +15,8 @@ interface AsyncContext<STATE : Any, SIDE_EFFECT : Any, RESOURCE : Any> {
         cachedValue: Async<RESOURCE>? = null,
         reducer: SimpleContext<STATE>.(Async<RESOURCE>) -> STATE,
     )
+
+    fun handleError(errorHandler: suspend (Throwable) -> Unit): AsyncContext<STATE, SIDE_EFFECT, RESOURCE>
 }
 
 /**
@@ -22,6 +26,8 @@ internal class AsyncContextImpl<STATE : Any, SIDE_EFFECT : Any, RESOURCE : Any>(
     private val action: suspend (STATE) -> RESOURCE,
     private val simpleSyntaxContext: SimpleSyntax<STATE, SIDE_EFFECT>,
 ) : AsyncContext<STATE, SIDE_EFFECT, RESOURCE> {
+    private var customErrorHandler: (suspend (Throwable) -> Unit)? = null
+
     override suspend fun execute(
         cachedValue: Async<RESOURCE>?,
         reducer: SimpleContext<STATE>.(Async<RESOURCE>) -> STATE,
@@ -30,12 +36,17 @@ internal class AsyncContextImpl<STATE : Any, SIDE_EFFECT : Any, RESOURCE : Any>(
             simpleSyntaxContext.reduce { reducer(Loading(cachedValue?.invoke())) }
             val result = action(simpleSyntaxContext.state)
             simpleSyntaxContext.reduce { reducer(Success(result)) }
-        } catch (_: CancellationException) {
-            Timber.i("Async actions has been cancelled")
         } catch (ex: Throwable) {
+            coroutineContext.ensureActive()
             Timber.e(ex)
+            customErrorHandler?.invoke(ex)
             simpleSyntaxContext.reduce { reducer(Fail(ex, cachedValue?.invoke())) }
         }
+    }
+
+    override fun handleError(errorHandler: suspend (Throwable) -> Unit): AsyncContext<STATE, SIDE_EFFECT, RESOURCE> {
+        customErrorHandler = errorHandler
+        return this
     }
 }
 
