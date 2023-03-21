@@ -2,26 +2,21 @@ package pl.jsyty.audiobookshelfnative.tabs
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.util.Util
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultDataSourceFactory
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.hls.HlsDataSourceFactory
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import pl.jsyty.audiobookshelfnative.ApiClient
+import okhttp3.OkHttpClient
+import org.koin.androidx.compose.get
 
 object HomeTab : Tab {
     override val options: TabOptions
@@ -46,6 +41,7 @@ object HomeTab : Tab {
         }
 
         val context = LocalContext.current
+        val httpClient = get<OkHttpClient>()
         val exoPlayer = remember(context) {
 
             ExoPlayer.Builder(context)
@@ -54,7 +50,7 @@ object HomeTab : Tab {
                         .setDataSourceFactory(
                             DefaultDataSource.Factory(
                                 context,
-                                OkHttpDataSource.Factory(ApiClient.httpClient)
+                                OkHttpDataSource.Factory(httpClient)
                             )
                         )
                 )

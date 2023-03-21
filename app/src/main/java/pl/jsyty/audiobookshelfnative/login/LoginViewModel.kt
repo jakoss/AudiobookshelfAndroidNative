@@ -1,8 +1,9 @@
 package pl.jsyty.audiobookshelfnative.login
 
+import org.koin.android.annotation.KoinViewModel
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
-import pl.jsyty.audiobookshelfnative.ApiClient
+import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.Settings
 import pl.jsyty.audiobookshelfnative.core.Async
 import pl.jsyty.audiobookshelfnative.core.BaseViewModel
@@ -10,7 +11,11 @@ import pl.jsyty.audiobookshelfnative.core.Uninitialized
 import pl.jsyty.audiobookshelfnative.core.async
 import pl.jsyty.audiobookshelfnative.models.LoginRequestDto
 
-class LoginViewModel : BaseViewModel<LoginViewModel.State, LoginViewModel.LoggedIn>(State()) {
+@KoinViewModel
+class LoginViewModel(
+    private val settings: Settings,
+    private val audiobookshelfService: AudiobookshelfService
+) : BaseViewModel<LoginViewModel.State, LoginViewModel.LoggedIn>(State()) {
     data class State(
         val loginAction: Async<Unit> = Uninitialized
     )
@@ -19,9 +24,9 @@ class LoginViewModel : BaseViewModel<LoginViewModel.State, LoginViewModel.Logged
 
     fun login(username: String, password: String) = intent {
         async {
-            val response = ApiClient.client.login(LoginRequestDto(username, password))
+            val response = audiobookshelfService.login(LoginRequestDto(username, password))
             val token = response.user.token
-            Settings.saveToken(token)
+            settings.saveToken(token)
             postSideEffect(LoggedIn)
         }.execute {
             state.copy(loginAction = it)

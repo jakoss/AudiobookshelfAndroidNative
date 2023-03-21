@@ -15,14 +15,16 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.inject
 import pl.jsyty.audiobookshelfnative.login.LoginScreen
 import pl.jsyty.audiobookshelfnative.tabs.TabsScreen
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
 class MainActivity : ComponentActivity() {
+    private val settings by inject<Settings>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val token = runBlocking { Settings.getToken() }
+        val token = runBlocking { settings.getToken() }
         val initialScreen = if (token.isNotBlank()) {
             TabsScreen
         } else {

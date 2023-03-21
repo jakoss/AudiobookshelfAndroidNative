@@ -8,12 +8,14 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Single
 
-object Settings {
+@Single
+class Settings(private val context: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
     private val store by lazy {
-        MyApplication.instance.dataStore
+        context.dataStore
     }
     private var tokenCache: String? = null
 

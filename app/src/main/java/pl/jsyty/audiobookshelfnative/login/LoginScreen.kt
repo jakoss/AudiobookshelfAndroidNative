@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import pl.jsyty.audiobookshelfnative.tabs.TabsScreen
 
@@ -27,7 +28,7 @@ class LoginScreen : AndroidScreen() {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val loginViewModel = viewModel<LoginViewModel>()
+        val loginViewModel = koinViewModel<LoginViewModel>()
 
         loginViewModel.collectSideEffect {
             navigator.replaceAll(TabsScreen)
