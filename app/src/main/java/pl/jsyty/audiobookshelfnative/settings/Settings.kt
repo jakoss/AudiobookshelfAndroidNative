@@ -1,4 +1,4 @@
-package pl.jsyty.audiobookshelfnative
+package pl.jsyty.audiobookshelfnative.settings
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -17,20 +17,7 @@ class Settings(private val context: Context) {
     private val store by lazy {
         context.dataStore
     }
-    private var tokenCache: String? = null
 
-    suspend fun getToken(): String {
-        val cached = tokenCache
-        if (cached != null) return cached
-        return store.data.map { preferences -> preferences[tokenKey] ?: "" }.first()
-    }
-
-    suspend fun saveToken(token: String) {
-        tokenCache = token
-        store.edit { preferences ->
-            preferences[tokenKey] = token
-        }
-    }
-
-    private val tokenKey = stringPreferencesKey("token")
+    val token = NullableCachedSettingEntry(store, stringPreferencesKey("token"))
+    val serverAddress = NullableCachedSettingEntry(store, stringPreferencesKey("server_address"))
 }

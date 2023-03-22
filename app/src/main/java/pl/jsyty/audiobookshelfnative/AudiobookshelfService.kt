@@ -13,6 +13,15 @@ interface AudiobookshelfService {
     @GET("api/libraries")
     suspend fun getAllLibraries(): GetAllLibrariesResponseDto
 
-    @GET("api/libraries/{id}/items?limit=0&minified=0")
+    @GET("api/libraries/{id}/items?limit=0&minified=1")
     suspend fun getAllItems(@Path("id") id: String): GetAllLibraryItemsResponseDto
+
+    @GET("api/me")
+    suspend fun getUser(): UserDto
+
+    @GET("api/me/items-in-progress")
+    suspend fun getItemsInProgress(): GetItemsInProgressResponseDto
+
+    @GET("api/me/progress/{libraryItemId}")
+    suspend fun getItemProgress(@Path("libraryItemId") libraryItemId: String): MediaProgressDto
 }

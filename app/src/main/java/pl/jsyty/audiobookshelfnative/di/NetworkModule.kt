@@ -4,11 +4,12 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
-import pl.jsyty.audiobookshelfnative.Settings
+import pl.jsyty.audiobookshelfnative.settings.Settings
 import retrofit2.Retrofit
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -17,15 +18,27 @@ val networkModule = module {
         val settings = get<Settings>()
         OkHttpClient.Builder()
             .addInterceptor { chain ->
-                val token = runBlocking { settings.getToken() }
-                if (token.isNotBlank()) {
-                    val newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer $token")
-                        .build()
-                    chain.proceed(newRequest)
-                } else {
-                    chain.proceed(chain.request())
+                val (token, serverAddress) = runBlocking {
+                    Pair(settings.token.get(), settings.serverAddress.get())
                 }
+                val newHost = serverAddress?.toHttpUrlOrNull()
+                requireNotNull(newHost) {
+                    "Server address cannot be null to call services"
+                }
+
+                val newUrl = chain.request().url.newBuilder()
+                    .scheme(newHost.scheme)
+                    .host(newHost.host)
+                    .build()
+                val request = chain.request().newBuilder()
+                    .url(newUrl)
+                    .apply {
+                        if (!token.isNullOrBlank()) {
+                            addHeader("Authorization", "Bearer $token")
+                        }
+                    }
+                    .build()
+                chain.proceed(request)
             }
             .build()
     }
@@ -38,7 +51,7 @@ val networkModule = module {
         val contentType = "application/json".toMediaType()
         Retrofit.Builder()
             .client(httpClient)
-            .baseUrl("https://audiobookshelf.jsyty.pl/")
+            .baseUrl("https://replace.me/")
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }

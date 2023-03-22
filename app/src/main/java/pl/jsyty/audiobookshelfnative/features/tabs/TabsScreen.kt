@@ -3,10 +3,7 @@ package pl.jsyty.audiobookshelfnative.features.tabs
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
@@ -44,6 +41,7 @@ object TabsScreen : Screen {
         NavigationBarItem(
             selected = tabNavigator.current == tab,
             onClick = { tabNavigator.current = tab },
+            label = { Text(text = tab.options.title) },
             icon = {
                 Icon(
                     painter = requireNotNull(tab.options.icon),

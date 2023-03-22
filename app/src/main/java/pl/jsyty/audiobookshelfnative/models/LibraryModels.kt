@@ -20,28 +20,28 @@ data class GetAllLibraryItemsResponseDto(
 )
 
 @Serializable
+data class GetItemsInProgressResponseDto(
+    val results: List<LibraryItemDto>,
+)
+
+@Serializable
 data class LibraryItemDto(
     val id: String,
     val mediaType: String,
-    val media: BookDto,
+    val media: BookMinifiedDto,
 )
 
 @Serializable
-data class BookDto(
-    val libraryItemId: String,
-    val metadata: BookMetadataDto,
+data class BookMinifiedDto(
+    val metadata: BookMetadataMinifiedDto,
     val coverPath: String?,
-    val tags: List<String>,
-    // TODO : add files and chapters
 )
 
 @Serializable
-data class BookMetadataDto(
+data class BookMetadataMinifiedDto(
     val title: String?,
     val subtitle: String?,
-    val authors: List<AuthorDto>,
-    val narrators: List<String>,
-    val genres: List<String>,
+    val authorName: String?,
     //val publishedYear: String?,
     //val publishedDate: String?,
     val publisher: String?,
@@ -53,9 +53,15 @@ data class BookMetadataDto(
 )
 
 @Serializable
-data class AuthorDto(
+data class MediaProgressDto(
     val id: String,
-    val name: String,
-    val description: String? = null,
-    val imagePath: String? = null,
+    val libraryItemId: String,
+    val duration: Double,
+    val progress: Double,
+    val currentTime: Double,
+    val isFinished: Boolean,
+    val hideFromContinueListening: Boolean,
+    val lastUpdate: Long,
+    val startedAt: Long,
+    val finishedAt: Long?,
 )

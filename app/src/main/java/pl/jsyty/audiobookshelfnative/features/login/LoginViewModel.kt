@@ -1,11 +1,10 @@
 package pl.jsyty.audiobookshelfnative.features.login
 
-import kotlinx.coroutines.delay
 import org.koin.android.annotation.KoinViewModel
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
-import pl.jsyty.audiobookshelfnative.Settings
+import pl.jsyty.audiobookshelfnative.settings.Settings
 import pl.jsyty.audiobookshelfnative.core.Async
 import pl.jsyty.audiobookshelfnative.core.BaseViewModel
 import pl.jsyty.audiobookshelfnative.core.Uninitialized
@@ -26,12 +25,13 @@ class LoginViewModel(
         object Error : SideEffect()
     }
 
-    fun login(username: String, password: String) = intent {
+    fun login(serverAddress: String, username: String, password: String) = intent {
         async {
-            delay(4000)
-            val response = audiobookshelfService.login(LoginRequestDto(username, password))
+            settings.serverAddress.put(serverAddress)
+            val response =
+                audiobookshelfService.login(LoginRequestDto(username.trim(), password.trim()))
             val token = response.user.token
-            settings.saveToken(token)
+            settings.token.put(token)
             postSideEffect(SideEffect.LoggedIn)
         }
             .handleError {
