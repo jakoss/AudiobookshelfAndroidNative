@@ -19,7 +19,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
+import androidx.core.net.toUri
+import androidx.media3.common.*
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.media3.ui.PlayerView
@@ -27,9 +33,14 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.common.util.concurrent.MoreExecutors
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.orbitmvi.orbit.compose.collectAsState
 import pl.jsyty.audiobookshelfnative.R
@@ -116,6 +127,12 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
             val sessionToken =
                 SessionToken(context, ComponentName(context, PlaybackService::class.java))
             mediaController = MediaController.Builder(context, sessionToken).buildAsync().await()
+
+            // val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+            // controllerFuture.addListener(
+            //     { mediaController = controllerFuture.get() },
+            //     MoreExecutors.directExecutor()
+            // )
         }
         onDispose {
             mediaController?.let {
@@ -171,12 +188,27 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
                     .size(72.dp)
                     .clip(CircleShape)
                     .clickable {
-                        mediaController?.let {
-                            it.setMediaItem(
-                                MediaItem.fromUri(model.audioFilePath)
-                            )
-                            // it.seekTo(model.progress.toLong())
-                            it.prepare()
+                        scope.launch {
+                            mediaController?.let {
+                                it.setMediaItem(
+                                    MediaItem.Builder()
+                                        .setUri(model.audioFilePath)
+                                        // .setUri("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
+                                        .setMediaId(model.libraryItemId)
+                                        .setMediaMetadata(
+                                            MediaMetadata.Builder()
+                                                .setTitle(model.title)
+                                                .setArtist(model.author)
+                                                .setWriter(model.author)
+                                                .setArtworkUri("${model.serverAddress}api/items/${model.libraryItemId}/cover".toUri())
+                                                .build()
+                                        )
+                                        .build(),
+                                    (model.progress / 1000).toLong()
+                                )
+                                it.prepare()
+                                it.play()
+                            }
                         }
                     }
             )

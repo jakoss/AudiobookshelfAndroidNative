@@ -1,5 +1,6 @@
 package pl.jsyty.audiobookshelfnative.player
 
+import androidx.media3.common.*
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -7,6 +8,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import com.google.common.util.concurrent.ListenableFuture
 import okhttp3.OkHttpClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -28,7 +30,9 @@ class PlaybackService : MediaSessionService(), KoinComponent {
             )
             .build()
         player.addAnalyticsListener(EventLogger())
-        mediaSession = MediaSession.Builder(this, player).build()
+        mediaSession = MediaSession
+            .Builder(this, player)
+            .build()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
