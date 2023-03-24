@@ -24,4 +24,10 @@ interface AudiobookshelfService {
 
     @GET("api/me/progress/{libraryItemId}")
     suspend fun getItemProgress(@Path("libraryItemId") libraryItemId: String): MediaProgressDto
+
+    @POST("api/items/{libraryItemId}/play")
+    suspend fun playItem(
+        @Path("libraryItemId") libraryItemId: String,
+        @Body playItemRequestDto: PlayItemRequestDto
+    ): PlaybackSessionExpandedDto
 }
