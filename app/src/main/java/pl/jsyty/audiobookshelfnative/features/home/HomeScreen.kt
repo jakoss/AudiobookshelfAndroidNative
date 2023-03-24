@@ -1,5 +1,6 @@
 package pl.jsyty.audiobookshelfnative.features.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,12 +18,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import pl.jsyty.audiobookshelfnative.R
 import pl.jsyty.audiobookshelfnative.core.images.BlurImageTransformation
+import pl.jsyty.audiobookshelfnative.features.player.PlayerScreen
 import pl.jsyty.audiobookshelfnative.ui.components.FullscreenAsyncHandler
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
@@ -72,10 +76,15 @@ private fun CurrentlyReadingCard(
     serverAddress: String,
     libraryItem: HomeScreenUiModel.LibraryItem
 ) {
+    // get root navigator
+    val navigator = LocalNavigator.currentOrThrow.parent?.parent
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
+            .clickable {
+                navigator?.push(PlayerScreen(libraryItem.id))
+            }
     ) {
         Row(
             modifier = Modifier
@@ -109,7 +118,7 @@ private fun CurrentlyReadingCard(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 LinearProgressIndicator(
-                    progress = libraryItem.progress.toFloat(),
+                    progress = libraryItem.progress,
                     trackColor = MaterialTheme.colorScheme.tertiaryContainer,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -129,7 +138,7 @@ private fun CurrentlyReadingCardPreview() {
                 id = "test",
                 title = "Book title",
                 author = "Book Author",
-                progress = 0.3,
+                progress = 0.3f,
                 isFinished = false
             )
         )
@@ -176,7 +185,7 @@ private fun LibraryItemCell(serverAddress: String, libraryItem: HomeScreenUiMode
 
                 if (libraryItem.progress > 0 && !libraryItem.isFinished) {
                     LinearProgressIndicator(
-                        progress = libraryItem.progress.toFloat(),
+                        progress = libraryItem.progress,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .fillMaxWidth()
@@ -215,7 +224,7 @@ private fun LibraryItemInProgressCellPreview() {
                 id = "test",
                 title = "Book title",
                 author = "Book Author",
-                progress = 0.3,
+                progress = 0.3f,
                 isFinished = false
             )
         )
@@ -232,7 +241,7 @@ private fun LibraryItemFinishedCellPreview() {
                 id = "test",
                 title = "Book title",
                 author = "Book Author",
-                progress = 0.9,
+                progress = 0.9f,
                 isFinished = true
             )
         )

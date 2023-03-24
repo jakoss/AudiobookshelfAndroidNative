@@ -7,8 +7,8 @@ import org.koin.android.annotation.KoinViewModel
 import org.orbitmvi.orbit.syntax.simple.intent
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.core.*
-import pl.jsyty.audiobookshelfnative.models.LibraryItemDto
-import pl.jsyty.audiobookshelfnative.models.UserDto
+import pl.jsyty.audiobookshelfnative.models.dtos.LibraryItemDto
+import pl.jsyty.audiobookshelfnative.models.dtos.UserDto
 import pl.jsyty.audiobookshelfnative.settings.Settings
 
 @KoinViewModel
@@ -68,7 +68,7 @@ class HomeViewModel(
             id = libraryItemDto.id,
             title = libraryItemDto.media.metadata.title ?: "No title",
             author = libraryItemDto.media.metadata.authorName ?: "No author",
-            progress = mediaProgress?.progress ?: 0.0,
+            progress = mediaProgress?.progress ?: 0.0f,
             isFinished = mediaProgress?.isFinished ?: false,
         )
     }

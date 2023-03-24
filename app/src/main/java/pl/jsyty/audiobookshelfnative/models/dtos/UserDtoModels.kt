@@ -1,4 +1,4 @@
-package pl.jsyty.audiobookshelfnative.models
+package pl.jsyty.audiobookshelfnative.models.dtos
 
 import kotlinx.serialization.Serializable
 

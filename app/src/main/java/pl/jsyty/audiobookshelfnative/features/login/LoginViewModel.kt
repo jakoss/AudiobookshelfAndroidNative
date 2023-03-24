@@ -9,7 +9,7 @@ import pl.jsyty.audiobookshelfnative.core.Async
 import pl.jsyty.audiobookshelfnative.core.BaseViewModel
 import pl.jsyty.audiobookshelfnative.core.Uninitialized
 import pl.jsyty.audiobookshelfnative.core.async
-import pl.jsyty.audiobookshelfnative.models.LoginRequestDto
+import pl.jsyty.audiobookshelfnative.models.dtos.LoginRequestDto
 
 @KoinViewModel
 class LoginViewModel(

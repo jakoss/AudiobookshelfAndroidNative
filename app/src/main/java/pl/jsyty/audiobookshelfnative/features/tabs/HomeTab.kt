@@ -29,35 +29,5 @@ object HomeTab : Tab {
     @Composable
     override fun Content() {
         Navigator(HomeScreen())
-        // val url = remember {
-        //     "https://audiobookshelf.jsyty.pl//hls/play_jnvn7pi75uibf9wa2u/output.m3u8"
-        // }
-        //
-        // val context = LocalContext.current
-        // val httpClient = get<OkHttpClient>()
-        // val exoPlayer = remember(context) {
-        //
-        //     ExoPlayer.Builder(context)
-        //         .setMediaSourceFactory(
-        //             DefaultMediaSourceFactory(context)
-        //                 .setDataSourceFactory(
-        //                     DefaultDataSource.Factory(
-        //                         context,
-        //                         OkHttpDataSource.Factory(httpClient)
-        //                     )
-        //                 )
-        //         )
-        //         .build()
-        //         .apply {
-        //             setMediaItem(MediaItem.fromUri(url))
-        //             prepare()
-        //         }
-        // }
-        //
-        // AndroidView(factory = { context ->
-        //     PlayerView(context).apply {
-        //         player = exoPlayer
-        //     }
-        // })
     }
 }

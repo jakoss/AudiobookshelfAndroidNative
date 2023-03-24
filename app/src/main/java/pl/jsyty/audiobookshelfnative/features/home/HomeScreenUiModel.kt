@@ -13,7 +13,7 @@ data class HomeScreenUiModel(
         val id: String,
         val title: String,
         val author: String,
-        val progress: Double,
+        val progress: Float,
         val isFinished: Boolean,
     )
 }

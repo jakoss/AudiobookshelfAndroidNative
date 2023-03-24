@@ -1,8 +1,6 @@
-package pl.jsyty.audiobookshelfnative.models
+package pl.jsyty.audiobookshelfnative.models.dtos
 
-import android.media.MediaMetadata
 import kotlinx.serialization.Serializable
-import okio.FileMetadata
 import pl.jsyty.audiobookshelfnative.core.serialization.EnumAsIntSerializer
 
 @Serializable
@@ -72,10 +70,10 @@ data class MediaProgressDto(
 @Serializable
 data class PlayItemRequestDto(
     val deviceInfo: DeviceInfoDto, // Information about the device
+    val mediaPlayer: String, // The media player the client is using
     val forceDirectPlay: Boolean = false, // Whether to force direct play of the library item
     val forceTranscode: Boolean = false, // Whether to force the server to transcode the audio
-    val supportedMimeTypes: List<String> = emptyList(), // The MIME types that are supported by the client
-    val mediaPlayer: String = "ExoPlayer" // The media player the client is using
+    val supportedMimeTypes: List<String> = emptyList() // The MIME types that are supported by the client
 )
 
 @Serializable
@@ -104,7 +102,7 @@ data class PlaybackSessionExpandedDto(
 data class BookMetadataDto(
     val title: String?,
     val subtitle: String?,
-    val authors: List<String>,
+    val authors: List<AuthorMinifiedDto>,
     //val publishedYear: String?,
     //val publishedDate: String?,
     val publisher: String?,
@@ -113,6 +111,12 @@ data class BookMetadataDto(
     val asin: String?,
     val language: String?,
     val explicit: Boolean,
+)
+
+@Serializable
+data class AuthorMinifiedDto(
+    val id: String,
+    val name: String,
 )
 
 @Serializable
