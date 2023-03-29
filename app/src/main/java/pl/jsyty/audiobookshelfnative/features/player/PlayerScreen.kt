@@ -191,12 +191,18 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
                         scope.launch {
                             mediaController?.let {
                                 it.setMediaItem(
-                                    MediaItem.Builder()
-                                        .setUri(model.audioFilePath)
-                                        // .setUri("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
+                                    MediaItem
+                                        .Builder()
+                                        .setRequestMetadata(
+                                            MediaItem.RequestMetadata
+                                                .Builder()
+                                                .setMediaUri(model.audioFilePath.toUri())
+                                                .build()
+                                        )
                                         .setMediaId(model.libraryItemId)
                                         .setMediaMetadata(
-                                            MediaMetadata.Builder()
+                                            MediaMetadata
+                                                .Builder()
                                                 .setTitle(model.title)
                                                 .setArtist(model.author)
                                                 .setWriter(model.author)
@@ -204,7 +210,7 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
                                                 .build()
                                         )
                                         .build(),
-                                    (model.progress / 1000).toLong()
+                                    (model.currentTimeInSeconds * 1000).toLong()
                                 )
                                 it.prepare()
                                 it.play()
@@ -237,6 +243,7 @@ private fun PlayerScreenContentPreview() {
                 subtitle = "Subtitle",
                 author = "Author",
                 progress = 0.5f,
+                currentTimeInSeconds = 123123f,
                 audioFilePath = "audioFilePath",
             ),
         )

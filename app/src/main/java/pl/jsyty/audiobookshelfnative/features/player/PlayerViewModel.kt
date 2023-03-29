@@ -51,6 +51,7 @@ class PlayerViewModel(
                 subtitle = playbackSession.libraryItem.media.metadata.subtitle,
                 author = playbackSession.displayAuthor,
                 progress = progress,
+                currentTimeInSeconds = playbackSession.currentTime,
                 audioFilePath = "${serverAddress.let { if (it.last() == '/') it.dropLast(1) else it }}${playbackSession.audioTracks.first().contentUrl}"
             )
         }.execute { state.copy(model = it) }
