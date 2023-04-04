@@ -1,6 +1,5 @@
 package pl.jsyty.audiobookshelfnative.core
 
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ensureActive
 import org.orbitmvi.orbit.syntax.simple.*
 import timber.log.Timber
