@@ -1,21 +1,19 @@
 package pl.jsyty.audiobookshelfnative.features.login
 
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Factory
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
-import pl.jsyty.audiobookshelfnative.settings.Settings
-import pl.jsyty.audiobookshelfnative.core.Async
-import pl.jsyty.audiobookshelfnative.core.BaseViewModel
-import pl.jsyty.audiobookshelfnative.core.Uninitialized
-import pl.jsyty.audiobookshelfnative.core.async
+import pl.jsyty.audiobookshelfnative.core.*
+import pl.jsyty.audiobookshelfnative.core.orbit.OrbitScreenModel
 import pl.jsyty.audiobookshelfnative.models.dtos.LoginRequestDto
+import pl.jsyty.audiobookshelfnative.settings.Settings
 
-@KoinViewModel
-class LoginViewModel(
+@Factory
+class LoginScreenModel(
     private val settings: Settings,
     private val audiobookshelfService: AudiobookshelfService
-) : BaseViewModel<LoginViewModel.State, LoginViewModel.SideEffect>(State()) {
+) : OrbitScreenModel<LoginScreenModel.State, LoginScreenModel.SideEffect>(State()) {
     data class State(
         val loginAction: Async<Unit> = Uninitialized
     )

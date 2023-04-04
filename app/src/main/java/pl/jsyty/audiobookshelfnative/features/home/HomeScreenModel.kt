@@ -1,21 +1,22 @@
 package pl.jsyty.audiobookshelfnative.features.home
 
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Factory
 import org.orbitmvi.orbit.syntax.simple.intent
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.core.*
+import pl.jsyty.audiobookshelfnative.core.orbit.OrbitScreenModel
 import pl.jsyty.audiobookshelfnative.models.dtos.LibraryItemDto
 import pl.jsyty.audiobookshelfnative.models.dtos.UserDto
 import pl.jsyty.audiobookshelfnative.settings.Settings
 
-@KoinViewModel
-class HomeViewModel(
+@Factory
+class HomeScreenModel(
     private val settings: Settings,
     private val audiobookshelfService: AudiobookshelfService,
-) : BaseViewModel<HomeViewModel.State, Unit>(State()) {
+) : OrbitScreenModel<HomeScreenModel.State, Unit>(State()) {
     data class State(
         val screenModel: Async<HomeScreenUiModel> = Uninitialized,
     )
@@ -25,12 +26,12 @@ class HomeViewModel(
             settings.serverAddress.get() ?: error("Server address cannot be null at this point")
 
         async {
-            val itemsJob = viewModelScope.async {
+            val itemsJob = coroutineScope.async {
                 val libraries = audiobookshelfService.getAllLibraries().libraries
                 val firstLibrary = libraries.firstOrNull() ?: error("No libraries")
                 audiobookshelfService.getAllItems(firstLibrary.id).results.toImmutableList()
             }
-            val userJob = viewModelScope.async {
+            val userJob = coroutineScope.async {
                 audiobookshelfService.getUser()
             }
 
@@ -56,7 +57,7 @@ class HomeViewModel(
                     mapLibraryItemToUiModel(it, user)
                 }.toImmutableList()
             )
-        }.execute { state.copy(screenModel = it) }
+        }.execute(cachedValue = state.screenModel) { state.copy(screenModel = it) }
     }
 
     private fun mapLibraryItemToUiModel(

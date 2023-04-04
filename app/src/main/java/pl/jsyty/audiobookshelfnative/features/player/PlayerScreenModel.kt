@@ -1,22 +1,23 @@
 package pl.jsyty.audiobookshelfnative.features.player
 
 import android.os.Build
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.reduce
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.BuildConfig
 import pl.jsyty.audiobookshelfnative.core.*
+import pl.jsyty.audiobookshelfnative.core.orbit.OrbitScreenModel
 import pl.jsyty.audiobookshelfnative.models.dtos.*
 import pl.jsyty.audiobookshelfnative.settings.Settings
 
-@KoinViewModel
-class PlayerViewModel(
+@Factory
+class PlayerScreenModel(
     @InjectedParam private val libraryItemId: String,
     private val audiobookshelfService: AudiobookshelfService,
     private val settings: Settings,
-) : BaseViewModel<PlayerViewModel.State, Unit>(State()) {
+) : OrbitScreenModel<PlayerScreenModel.State, Unit>(State()) {
     data class State(
         val model: Async<PlayerScreenUiModel> = Uninitialized,
         val playbackSession: PlaybackSessionExpandedDto? = null,

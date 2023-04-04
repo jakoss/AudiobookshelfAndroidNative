@@ -1,7 +1,7 @@
 package pl.jsyty.audiobookshelfnative.features.player
 
 import android.content.ComponentName
-import androidx.compose.foundation.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,52 +12,40 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
-import androidx.media3.common.*
-import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.okhttp.OkHttpDataSource
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.util.EventLogger
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import androidx.media3.ui.PlayerView
-import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.common.util.concurrent.MoreExecutors
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.orbitmvi.orbit.compose.collectAsState
 import pl.jsyty.audiobookshelfnative.R
 import pl.jsyty.audiobookshelfnative.core.images.BlurImageTransformation
+import pl.jsyty.audiobookshelfnative.core.voyager.getScreenModel
 import pl.jsyty.audiobookshelfnative.player.PlaybackService
 import pl.jsyty.audiobookshelfnative.ui.components.FullscreenAsyncHandler
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
-class PlayerScreen(private val libraryItemId: String) : AndroidScreen() {
+class PlayerScreen(private val libraryItemId: String) : Screen {
     @Composable
     override fun Content() {
-        val playerViewModel = koinViewModel<PlayerViewModel> { parametersOf(libraryItemId) }
-        val state by playerViewModel.collectAsState()
+        val playerScreenModel = getScreenModel<PlayerScreenModel> { parametersOf(libraryItemId) }
+        val state by playerScreenModel.collectAsState()
 
         FullscreenAsyncHandler(
             state = state.model,
-            onRetryAction = playerViewModel::loadLibraryItem
+            onRetryAction = playerScreenModel::loadLibraryItem
         ) {
             PlayerScreenContent(it)
         }
@@ -127,12 +115,6 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
             val sessionToken =
                 SessionToken(context, ComponentName(context, PlaybackService::class.java))
             mediaController = MediaController.Builder(context, sessionToken).buildAsync().await()
-
-            // val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-            // controllerFuture.addListener(
-            //     { mediaController = controllerFuture.get() },
-            //     MoreExecutors.directExecutor()
-            // )
         }
         onDispose {
             mediaController?.let {

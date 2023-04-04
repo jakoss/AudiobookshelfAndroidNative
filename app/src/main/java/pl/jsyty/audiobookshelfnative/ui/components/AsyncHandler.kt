@@ -28,11 +28,11 @@ fun <T> FullscreenAsyncHandler(
     success: @Composable (T) -> Unit,
 ) {
     Crossfade(targetState = state, label = "Async state crossfade") {
-        when (it) {
-            Uninitialized -> uninitialized()
-            is Loading -> loading()
-            is Fail -> error(it.error)
-            is Success -> success(it())
+        when {
+            it is Uninitialized -> uninitialized()
+            it is Success || it() != null -> success(requireNotNull(it()))
+            it is Loading -> loading()
+            it is Fail -> error(it.error)
         }
     }
 }

@@ -11,43 +11,43 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import pl.jsyty.audiobookshelfnative.core.voyager.getScreenModel
 import pl.jsyty.audiobookshelfnative.features.tabs.TabsScreen
 import pl.jsyty.audiobookshelfnative.ui.components.FullscreenLoadingAsyncHandler
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
-class LoginScreen : AndroidScreen() {
+class LoginScreen : Screen {
     @Composable
     override fun Content() {
-        val loginViewModel = koinViewModel<LoginViewModel>()
+        val loginScreenModel = getScreenModel<LoginScreenModel>()
 
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
 
-        loginViewModel.collectSideEffect {
+        loginScreenModel.collectSideEffect {
             when (it) {
-                LoginViewModel.SideEffect.Error -> {
+                LoginScreenModel.SideEffect.Error -> {
                     scope.launch {
                         snackbarHostState.showSnackbar("Something went wrong")
                     }
                 }
 
-                LoginViewModel.SideEffect.LoggedIn -> navigator.replaceAll(TabsScreen)
+                LoginScreenModel.SideEffect.LoggedIn -> navigator.replaceAll(TabsScreen)
             }
         }
 
-        val state by loginViewModel.collectAsState()
+        val state by loginScreenModel.collectAsState()
         LoginScreenImpl(
             snackbarHostState = snackbarHostState,
             state = state,
-            loginAction = loginViewModel::login
+            loginAction = loginScreenModel::login
         )
     }
 }
@@ -55,7 +55,7 @@ class LoginScreen : AndroidScreen() {
 @Composable
 private fun LoginScreenImpl(
     snackbarHostState: SnackbarHostState,
-    state: LoginViewModel.State,
+    state: LoginScreenModel.State,
     loginAction: (String, String, String) -> Unit
 ) {
     Scaffold(
@@ -130,7 +130,7 @@ private fun LoginScreenImplPreview() {
         val snackbarHostState = remember { SnackbarHostState() }
         LoginScreenImpl(
             snackbarHostState = snackbarHostState,
-            state = LoginViewModel.State(),
+            state = LoginScreenModel.State(),
             loginAction = { _, _, _ -> }
         )
     }

@@ -17,37 +17,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import pl.jsyty.audiobookshelfnative.R
 import pl.jsyty.audiobookshelfnative.core.images.BlurImageTransformation
+import pl.jsyty.audiobookshelfnative.core.voyager.getScreenModel
 import pl.jsyty.audiobookshelfnative.features.player.PlayerScreen
 import pl.jsyty.audiobookshelfnative.ui.components.FullscreenAsyncHandler
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
-class HomeScreen : AndroidScreen() {
+class HomeScreen : Screen {
     @Composable
     override fun Content() {
-        Home()
+        Home(homeScreenModel = getScreenModel())
     }
 }
 
 @Composable
-private fun Home(homeViewModel: HomeViewModel = koinViewModel()) {
-    val state by homeViewModel.collectAsState()
+private fun Home(homeScreenModel: HomeScreenModel) {
+    val state by homeScreenModel.collectAsState()
 
     LaunchedEffect(Unit) {
-        homeViewModel.loadData()
+        homeScreenModel.loadData()
     }
 
     FullscreenAsyncHandler(
         state = state.screenModel,
-        onRetryAction = homeViewModel::loadData
+        onRetryAction = homeScreenModel::loadData
     ) { screenModel ->
         val items = screenModel.libraryItems
         LazyVerticalGrid(

@@ -56,7 +56,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
     lintChecks("com.slack.lint.compose:compose-lint-checks:1.1.1")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -87,17 +87,17 @@ dependencies {
     implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-androidx:$voyagerVersion")
 
-    val koinVersion = "3.3.3"
+    val koinVersion = "3.4.0"
     implementation("io.insert-koin:koin-android:$koinVersion")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.2")
-    val koinAnnotationVersion = "1.1.1"
+    implementation("io.insert-koin:koin-androidx-compose:3.4.3")
+    val koinAnnotationVersion = "1.2.0"
     implementation("io.insert-koin:koin-annotations:$koinAnnotationVersion")
     ksp("io.insert-koin:koin-ksp-compiler:$koinAnnotationVersion")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.0")
-    implementation(platform("dev.chrisbanes.compose:compose-bom:2023.02.00-rc02"))
+    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -105,12 +105,11 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0-beta01")
 
     val orbitMviVersion = "4.6.1"
-    implementation("org.orbit-mvi:orbit-viewmodel:$orbitMviVersion")
     implementation("org.orbit-mvi:orbit-compose:$orbitMviVersion")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
