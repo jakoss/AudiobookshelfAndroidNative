@@ -44,15 +44,14 @@ class PlayerScreenModel(
             )
             reduce { state.copy(playbackSession = playbackSession) }
 
-            val progress = playbackSession.currentTime / playbackSession.duration
             PlayerScreenUiModel(
                 libraryItemId = libraryItemId,
                 serverAddress = serverAddress,
                 title = playbackSession.displayTitle,
                 subtitle = playbackSession.libraryItem.media.metadata.subtitle,
                 author = playbackSession.displayAuthor,
-                progress = progress,
                 currentTimeInSeconds = playbackSession.currentTime,
+                duration = playbackSession.duration,
                 audioFilePath = "${serverAddress.let { if (it.last() == '/') it.dropLast(1) else it }}${playbackSession.audioTracks.first().contentUrl}"
             )
         }.execute { state.copy(model = it) }

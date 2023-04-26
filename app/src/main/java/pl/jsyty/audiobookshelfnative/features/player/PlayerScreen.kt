@@ -1,6 +1,6 @@
 package pl.jsyty.audiobookshelfnative.features.player
 
-import android.content.ComponentName
+import android.text.format.DateUtils
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,23 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.guava.await
-import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 import org.orbitmvi.orbit.compose.collectAsState
 import pl.jsyty.audiobookshelfnative.R
 import pl.jsyty.audiobookshelfnative.core.images.BlurImageTransformation
 import pl.jsyty.audiobookshelfnative.core.voyager.getScreenModel
-import pl.jsyty.audiobookshelfnative.player.PlaybackService
 import pl.jsyty.audiobookshelfnative.ui.components.FullscreenAsyncHandler
 import pl.jsyty.audiobookshelfnative.ui.theme.AudiobookshelfNativeTheme
 
@@ -107,22 +99,13 @@ private fun PlayerScreenContent(model: PlayerScreenUiModel) {
 
 @Composable
 private fun PlayerControls(model: PlayerScreenUiModel) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var mediaController: MediaController? by remember { mutableStateOf(null) }
-    DisposableEffect(Unit) {
-        scope.launch {
-            val sessionToken =
-                SessionToken(context, ComponentName(context, PlaybackService::class.java))
-            mediaController = MediaController.Builder(context, sessionToken).buildAsync().await()
-        }
-        onDispose {
-            mediaController?.let {
-                it.release()
-                mediaController = null
-            }
-        }
-    }
+    val playerState = rememberPlayerState(
+        initialTitle = model.title,
+        initialAuthor = model.author,
+        initialDuration = model.duration,
+        initialCurrentTimeInSeconds = model.currentTimeInSeconds
+    )
+
     Column(modifier = Modifier.padding(horizontal = 48.dp)) {
         Text(
             text = model.title,
@@ -138,15 +121,36 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
             overflow = TextOverflow.Ellipsis,
         )
         Spacer(modifier = Modifier.height(32.dp))
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), progress = model.progress)
+
+        var seekToValue by remember {
+            mutableStateOf<Float?>(null)
+        }
+        Slider(
+            modifier = Modifier.fillMaxWidth(),
+            value = seekToValue ?: playerState.currentTimeInSeconds.toFloat(),
+            valueRange = 0f..playerState.durationInSeconds.toFloat(),
+            onValueChange = {
+                seekToValue = it
+
+            },
+            onValueChangeFinished = {
+                seekToValue?.let {
+                    playerState.seekTo(it.toLong())
+                }
+                seekToValue = null
+            })
+
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-
-            Text(text = "0:00", style = MaterialTheme.typography.bodySmall)
-            Text(text = "1:00", style = MaterialTheme.typography.bodySmall)
+            val currentLabel = DateUtils.formatElapsedTime(
+                seekToValue?.toLong() ?: playerState.currentTimeInSeconds
+            )
+            val durationLabel = DateUtils.formatElapsedTime(playerState.durationInSeconds)
+            Text(text = currentLabel, style = MaterialTheme.typography.bodySmall)
+            Text(text = durationLabel, style = MaterialTheme.typography.bodySmall)
         }
         Spacer(modifier = Modifier.height(24.dp))
         Row(
@@ -156,53 +160,34 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
         ) {
             Icon(
                 imageVector = Icons.Filled.FastRewind,
-                contentDescription = "Skip previous",
+                contentDescription = "Fast rewind",
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
                     .clickable { }
             )
             Icon(
-                imageVector = Icons.Filled.PlayCircleFilled,
+                imageVector = if (playerState.isPlaying) {
+                    Icons.Filled.PauseCircleFilled
+                } else {
+                    Icons.Filled.PlayCircleFilled
+                },
                 contentDescription = "Play",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(72.dp)
                     .clip(CircleShape)
                     .clickable {
-                        scope.launch {
-                            mediaController?.let {
-                                it.setMediaItem(
-                                    MediaItem
-                                        .Builder()
-                                        .setRequestMetadata(
-                                            MediaItem.RequestMetadata
-                                                .Builder()
-                                                .setMediaUri(model.audioFilePath.toUri())
-                                                .build()
-                                        )
-                                        .setMediaId(model.libraryItemId)
-                                        .setMediaMetadata(
-                                            MediaMetadata
-                                                .Builder()
-                                                .setTitle(model.title)
-                                                .setArtist(model.author)
-                                                .setWriter(model.author)
-                                                .setArtworkUri("${model.serverAddress}api/items/${model.libraryItemId}/cover".toUri())
-                                                .build()
-                                        )
-                                        .build(),
-                                    (model.currentTimeInSeconds * 1000).toLong()
-                                )
-                                it.prepare()
-                                it.play()
-                            }
+                        if (!playerState.isPlaying) {
+                            playMedia(playerState, model)
+                        } else {
+                            playerState.pause()
                         }
                     }
             )
             Icon(
                 imageVector = Icons.Filled.FastForward,
-                contentDescription = "Skip next",
+                contentDescription = "Fast forward",
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
@@ -211,6 +196,20 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
         }
         Spacer(modifier = Modifier.height(24.dp))
     }
+}
+
+private fun playMedia(
+    playerState: PlayerState,
+    model: PlayerScreenUiModel
+) {
+    playerState.play(
+        id = model.libraryItemId,
+        title = model.title,
+        author = model.author,
+        mediaUri = model.audioFilePath,
+        coverUri = "${model.serverAddress}api/items/${model.libraryItemId}/cover",
+        startTimeInSeconds = model.currentTimeInSeconds.toLong()
+    )
 }
 
 @Preview
@@ -224,7 +223,7 @@ private fun PlayerScreenContentPreview() {
                 title = "Title",
                 subtitle = "Subtitle",
                 author = "Author",
-                progress = 0.5f,
+                duration = 4123413f,
                 currentTimeInSeconds = 123123f,
                 audioFilePath = "audioFilePath",
             ),

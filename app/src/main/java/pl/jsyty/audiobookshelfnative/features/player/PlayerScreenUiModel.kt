@@ -9,7 +9,7 @@ data class PlayerScreenUiModel(
     val title: String,
     val subtitle: String?,
     val author: String,
-    val progress: Float,
     val currentTimeInSeconds: Float,
+    val duration: Float,
     val audioFilePath: String,
 )

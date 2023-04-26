@@ -23,3 +23,7 @@ build
 .idea/codestream.xml
 
 .idea/vcs.xml
+
+app/release/
+
+keys/

@@ -11,6 +11,7 @@ import org.koin.dsl.module
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.settings.Settings
 import retrofit2.Retrofit
+import java.io.IOException
 
 @OptIn(ExperimentalSerializationApi::class)
 val networkModule = module {
@@ -22,9 +23,7 @@ val networkModule = module {
                     Pair(settings.token.get(), settings.serverAddress.get())
                 }
                 val newHost = serverAddress?.toHttpUrlOrNull()
-                requireNotNull(newHost) {
-                    "Server address cannot be null to call services"
-                }
+                    ?: throw IOException("Server address cannot be null to call services")
 
                 val newUrl = chain.request().url.newBuilder()
                     .scheme(newHost.scheme)
