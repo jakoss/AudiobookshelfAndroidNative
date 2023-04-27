@@ -25,7 +25,7 @@ class PlayerState(
     var durationInSeconds by mutableStateOf(initialDuration.toLong())
     var currentTimeInSeconds by mutableStateOf(initialCurrentTimeInSeconds.toLong())
     var isPlaying by mutableStateOf(false)
-    // TODO : add isPlayerReady flag
+    var isPlayerReady by mutableStateOf(false)
 
     fun play(
         id: String,
@@ -69,6 +69,14 @@ class PlayerState(
 
     fun seekTo(positionInSeconds: Long) {
         mediaController?.seekTo(positionInSeconds * 1000)
+    }
+
+    fun seekForward() {
+        mediaController?.seekForward()
+    }
+
+    fun seekBack() {
+        mediaController?.seekBack()
     }
 
     internal fun setMediaController(mediaController: MediaController?) {
@@ -115,6 +123,7 @@ fun rememberPlayerState(
                         playerState.author = it.artist.toString()
                     }
                     playerState.isPlaying = player.isPlaying
+                    playerState.isPlayerReady = player.playbackState != Player.STATE_BUFFERING
                 }
             }
 
@@ -125,6 +134,7 @@ fun rememberPlayerState(
                 MediaController.Builder(context, sessionToken).buildAsync().await().also {
                     it.addListener(listener)
                     playerState.setMediaController(it)
+                    playerState.isPlayerReady = true
                 }
         }
         onDispose {
@@ -132,6 +142,7 @@ fun rememberPlayerState(
                 it.removeListener(listener)
                 it.release()
                 mediaController = null
+                playerState.isPlayerReady = false
             }
         }
     }

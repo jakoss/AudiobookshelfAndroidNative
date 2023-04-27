@@ -3,12 +3,14 @@ package pl.jsyty.audiobookshelfnative
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import pl.jsyty.audiobookshelfnative.features.login.LoginScreen
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 TabsScreen
             }
             ensureActive()
-            
+
             setContent {
                 AudiobookshelfNativeTheme {
                     // A surface container using the 'background' color from the theme
@@ -38,6 +40,11 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         Navigator(initialScreen)
+                        // Voyager is using experimental AnimatedContent API which was changed in the 1.5.0-alpha. Waiting for it to catch up
+                        // Navigator(initialScreen) { navigator ->
+                        //     @OptIn(ExperimentalAnimationApi::class)
+                        //     SlideTransition(navigator)
+                        // }
                     }
                 }
             }

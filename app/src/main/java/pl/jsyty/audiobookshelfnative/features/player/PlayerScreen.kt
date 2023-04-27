@@ -127,6 +127,7 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
         }
         Slider(
             modifier = Modifier.fillMaxWidth(),
+            enabled = playerState.isPlayerReady,
             value = seekToValue ?: playerState.currentTimeInSeconds.toFloat(),
             valueRange = 0f..playerState.durationInSeconds.toFloat(),
             onValueChange = {
@@ -164,7 +165,7 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable(enabled = playerState.isPlayerReady, onClick = playerState::seekBack)
             )
             Icon(
                 imageVector = if (playerState.isPlaying) {
@@ -177,7 +178,7 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
                 modifier = Modifier
                     .size(72.dp)
                     .clip(CircleShape)
-                    .clickable {
+                    .clickable(enabled = playerState.isPlayerReady) {
                         if (!playerState.isPlaying) {
                             playMedia(playerState, model)
                         } else {
@@ -191,7 +192,10 @@ private fun PlayerControls(model: PlayerScreenUiModel) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable(
+                        enabled = playerState.isPlayerReady,
+                        onClick = playerState::seekForward
+                    )
             )
         }
         Spacer(modifier = Modifier.height(24.dp))

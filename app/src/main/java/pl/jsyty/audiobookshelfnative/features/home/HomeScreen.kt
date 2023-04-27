@@ -19,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.orbitmvi.orbit.compose.collectAsState
@@ -45,6 +44,15 @@ private fun Home(homeScreenModel: HomeScreenModel) {
         homeScreenModel.loadData()
     }
 
+    // get root navigator
+    val navigator = LocalNavigator.current?.parent?.parent
+
+    val navigateToPlayerScreen: (String) -> Unit = remember {
+        { id: String ->
+            navigator?.push(PlayerScreen(id))
+        }
+    }
+
     FullscreenAsyncHandler(
         state = state.screenModel,
         onRetryAction = homeScreenModel::loadData
@@ -60,12 +68,17 @@ private fun Home(homeScreenModel: HomeScreenModel) {
                 item(span = { GridItemSpan(2) }, contentType = "ReadingCard") {
                     CurrentlyReadingCard(
                         serverAddress = screenModel.serverAddress,
-                        libraryItem = it
+                        libraryItem = it,
+                        navigateToPlayerScreen = navigateToPlayerScreen,
                     )
                 }
             }
             items(items.size, key = { items[it].id }, contentType = { "LibraryItemCell" }) {
-                LibraryItemCell(serverAddress = screenModel.serverAddress, libraryItem = items[it])
+                LibraryItemCell(
+                    serverAddress = screenModel.serverAddress,
+                    libraryItem = items[it],
+                    navigateToPlayerScreen = navigateToPlayerScreen,
+                )
             }
         }
     }
@@ -74,16 +87,15 @@ private fun Home(homeScreenModel: HomeScreenModel) {
 @Composable
 private fun CurrentlyReadingCard(
     serverAddress: String,
-    libraryItem: HomeScreenUiModel.LibraryItem
+    libraryItem: HomeScreenUiModel.LibraryItem,
+    navigateToPlayerScreen: (String) -> Unit,
 ) {
-    // get root navigator
-    val navigator = LocalNavigator.currentOrThrow.parent?.parent
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .clickable {
-                navigator?.push(PlayerScreen(libraryItem.id))
+                navigateToPlayerScreen(libraryItem.id)
             }
     ) {
         Row(
@@ -140,14 +152,23 @@ private fun CurrentlyReadingCardPreview() {
                 author = "Book Author",
                 progress = 0.3f,
                 isFinished = false
-            )
+            ),
+            navigateToPlayerScreen = {}
         )
     }
 }
 
 @Composable
-private fun LibraryItemCell(serverAddress: String, libraryItem: HomeScreenUiModel.LibraryItem) {
-    Card {
+private fun LibraryItemCell(
+    serverAddress: String,
+    libraryItem: HomeScreenUiModel.LibraryItem,
+    navigateToPlayerScreen: (String) -> Unit,
+) {
+    Card(
+        modifier = Modifier.clickable {
+            navigateToPlayerScreen(libraryItem.id)
+        }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -226,7 +247,8 @@ private fun LibraryItemInProgressCellPreview() {
                 author = "Book Author",
                 progress = 0.3f,
                 isFinished = false
-            )
+            ),
+            navigateToPlayerScreen = {}
         )
     }
 }
@@ -243,7 +265,8 @@ private fun LibraryItemFinishedCellPreview() {
                 author = "Book Author",
                 progress = 0.9f,
                 isFinished = true
-            )
+            ),
+            navigateToPlayerScreen = {}
         )
     }
 }
