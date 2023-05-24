@@ -87,7 +87,7 @@ dependencies {
     val voyagerVersion = "1.0.0-rc06"
     implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
-    implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
+    // implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-androidx:$voyagerVersion")
 
     val koinVersion = "3.4.0"
@@ -100,13 +100,13 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.1")
-    implementation(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-alpha03"))
+    implementation(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-beta01"))
     // implementation(platform("androidx.compose:compose-bom:2023.04.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material3:material3:1.2.0-alpha01")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha02")
 
     val orbitMviVersion = "6.0.0"
     implementation("org.orbit-mvi:orbit-compose:$orbitMviVersion")
@@ -116,7 +116,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-alpha03"))
+    androidTestImplementation(platform("dev.chrisbanes.compose:compose-bom:2023.04.00-beta01"))
     // androidTestImplementation(platform("androidx.compose:compose-bom:2023.04.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
