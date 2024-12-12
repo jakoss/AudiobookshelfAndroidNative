@@ -22,6 +22,7 @@ class PlaybackService : MediaSessionService(), KoinComponent {
 
     private val playerBitmapLoader by inject<PlayerBitmapLoader>()
 
+    @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
         val player = ExoPlayer.Builder(this)
@@ -43,7 +44,6 @@ class PlaybackService : MediaSessionService(), KoinComponent {
             )
             .build()
         player.addAnalyticsListener(EventLogger())
-        @OptIn(UnstableApi::class)
         mediaSession = MediaSession
             .Builder(this, player)
             .setBitmapLoader(CacheBitmapLoader(playerBitmapLoader))

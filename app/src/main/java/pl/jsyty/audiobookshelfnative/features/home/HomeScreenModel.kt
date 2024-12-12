@@ -1,10 +1,9 @@
 package pl.jsyty.audiobookshelfnative.features.home
 
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import org.koin.core.annotation.Factory
-import org.orbitmvi.orbit.syntax.simple.intent
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.core.*
 import pl.jsyty.audiobookshelfnative.core.orbit.OrbitScreenModel
@@ -26,12 +25,12 @@ class HomeScreenModel(
             settings.serverAddress.get() ?: error("Server address cannot be null at this point")
 
         async {
-            val itemsJob = coroutineScope.async {
+            val itemsJob = screenModelScope.async {
                 val libraries = audiobookshelfService.getAllLibraries().libraries
                 val firstLibrary = libraries.firstOrNull() ?: error("No libraries")
                 audiobookshelfService.getAllItems(firstLibrary.id).results.toImmutableList()
             }
-            val userJob = coroutineScope.async {
+            val userJob = screenModelScope.async {
                 audiobookshelfService.getUser()
             }
 

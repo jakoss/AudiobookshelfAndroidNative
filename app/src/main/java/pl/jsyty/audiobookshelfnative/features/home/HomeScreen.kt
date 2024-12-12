@@ -19,8 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.transformations
 import org.orbitmvi.orbit.compose.collectAsState
 import pl.jsyty.audiobookshelfnative.R
 import pl.jsyty.audiobookshelfnative.core.images.BlurImageTransformation
@@ -130,9 +131,9 @@ private fun CurrentlyReadingCard(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 LinearProgressIndicator(
-                    progress = libraryItem.progress,
+                    progress = { libraryItem.progress },
+                    modifier = Modifier.fillMaxWidth(),
                     trackColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
@@ -206,10 +207,10 @@ private fun LibraryItemCell(
 
                 if (libraryItem.progress > 0 && !libraryItem.isFinished) {
                     LinearProgressIndicator(
-                        progress = libraryItem.progress,
+                        progress = { libraryItem.progress },
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                 }
             }

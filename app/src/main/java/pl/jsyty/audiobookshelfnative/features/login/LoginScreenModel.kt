@@ -1,8 +1,7 @@
 package pl.jsyty.audiobookshelfnative.features.login
 
 import org.koin.core.annotation.Factory
-import org.orbitmvi.orbit.syntax.simple.intent
-import org.orbitmvi.orbit.syntax.simple.postSideEffect
+
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.core.*
 import pl.jsyty.audiobookshelfnative.core.orbit.OrbitScreenModel
@@ -19,8 +18,8 @@ class LoginScreenModel(
     )
 
     sealed class SideEffect {
-        object LoggedIn : SideEffect()
-        object Error : SideEffect()
+        data object LoggedIn : SideEffect()
+        data object Error : SideEffect()
     }
 
     fun login(serverAddress: String, username: String, password: String) = intent {

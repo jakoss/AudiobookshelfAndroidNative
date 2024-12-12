@@ -3,8 +3,6 @@ package pl.jsyty.audiobookshelfnative.features.player
 import android.os.Build
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
-import org.orbitmvi.orbit.syntax.simple.intent
-import org.orbitmvi.orbit.syntax.simple.reduce
 import pl.jsyty.audiobookshelfnative.AudiobookshelfService
 import pl.jsyty.audiobookshelfnative.BuildConfig
 import pl.jsyty.audiobookshelfnative.core.*

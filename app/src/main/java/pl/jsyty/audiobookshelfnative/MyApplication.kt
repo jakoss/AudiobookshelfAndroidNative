@@ -1,8 +1,11 @@
 package pl.jsyty.audiobookshelfnative
 
 import android.app.Application
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import android.content.Context
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.crossfade
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -14,7 +17,7 @@ import pl.jsyty.audiobookshelfnative.di.AppModule
 import pl.jsyty.audiobookshelfnative.di.networkModule
 import timber.log.Timber
 
-class MyApplication : Application(), ImageLoaderFactory, KoinComponent {
+class MyApplication : Application(), SingletonImageLoader.Factory, KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
@@ -33,10 +36,14 @@ class MyApplication : Application(), ImageLoaderFactory, KoinComponent {
         }
     }
 
-    override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(this)
+    override fun newImageLoader(context: Context): ImageLoader {
+        return ImageLoader.Builder(context)
             .crossfade(true)
-            .okHttpClient(get<OkHttpClient>())
+            .components {
+                add(OkHttpNetworkFetcherFactory(callFactory = {
+                    get<OkHttpClient>()
+                }))
+            }
             .build()
     }
 }

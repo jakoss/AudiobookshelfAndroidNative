@@ -3,12 +3,13 @@ package pl.jsyty.audiobookshelfnative.core.images
 import android.graphics.*
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
-import coil.decode.DecodeUtils
-import coil.size.*
-import coil.transform.Transformation
+import coil3.decode.DecodeUtils
+import coil3.size.*
+import coil3.transform.Transformation
+
 import kotlin.math.roundToInt
 
-class BlurImageTransformation : Transformation {
+class BlurImageTransformation : Transformation() {
 
     override suspend fun transform(input: Bitmap, size: Size): Bitmap {
         // we will do the transformation only for non-square images
@@ -17,7 +18,7 @@ class BlurImageTransformation : Transformation {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
         val (outputWidth, outputHeight) = calculateOutputSize(input, size)
 
-        val output = createBitmap(outputWidth, outputHeight, input.config)
+        val output = createBitmap(outputWidth, outputHeight, input.config ?: Bitmap.Config.ARGB_8888)
         output.applyCanvas {
             // draw blurred background
             drawBlurredBackground(input, outputWidth, outputHeight, paint)

@@ -9,9 +9,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
-import pl.jsyty.audiobookshelfnative.core.voyager.SlideTransition
+import org.koin.compose.KoinContext
 import pl.jsyty.audiobookshelfnative.features.login.LoginScreen
 import pl.jsyty.audiobookshelfnative.features.tabs.TabsScreen
 import pl.jsyty.audiobookshelfnative.settings.Settings
@@ -32,14 +33,16 @@ class MainActivity : ComponentActivity() {
             ensureActive()
 
             setContent {
-                AudiobookshelfNativeTheme {
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        Navigator(initialScreen) { navigator ->
-                            SlideTransition(navigator)
+                KoinContext {
+                    AudiobookshelfNativeTheme {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            Navigator(initialScreen) { navigator ->
+                                SlideTransition(navigator)
+                            }
                         }
                     }
                 }

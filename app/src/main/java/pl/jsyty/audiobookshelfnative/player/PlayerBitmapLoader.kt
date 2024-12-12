@@ -5,11 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.graphics.drawable.toBitmap
-import androidx.media3.common.util.Assertions
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.BitmapLoader
-import coil.imageLoader
-import coil.request.ImageRequest
+import androidx.media3.common.util.*
+import coil3.asDrawable
+import coil3.imageLoader
+import coil3.request.ImageRequest
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +21,8 @@ internal class PlayerBitmapLoader(
     private val context: Context,
 ) : BitmapLoader {
     private val scope = CoroutineScope(Dispatchers.IO)
+    override fun supportsMimeType(mimeType: String): Boolean = true
+
     override fun decodeBitmap(data: ByteArray): ListenableFuture<Bitmap> = scope.future {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
         requireNotNull(bitmap) {
@@ -34,7 +35,7 @@ internal class PlayerBitmapLoader(
             .data(uri)
             .build()
         val result = context.imageLoader.execute(imageRequest)
-        requireNotNull(result.drawable?.toBitmap()) {
+        requireNotNull(result.image?.asDrawable(context.resources)?.toBitmap()) {
             "Cannot docode bitmap from drawable"
         }
     }

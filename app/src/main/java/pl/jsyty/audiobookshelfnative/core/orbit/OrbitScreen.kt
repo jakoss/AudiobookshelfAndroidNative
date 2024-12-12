@@ -1,7 +1,6 @@
 package pl.jsyty.audiobookshelfnative.core.orbit
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.*
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.container
 
@@ -18,5 +17,5 @@ import org.orbitmvi.orbit.container
  */
 abstract class OrbitScreenModel<STATE : Any, SIDE_EFFECT : Any>(initialState: STATE) : ScreenModel,
     ContainerHost<STATE, SIDE_EFFECT> {
-    override val container = coroutineScope.container<STATE, SIDE_EFFECT>(initialState)
+    override val container = screenModelScope.container<STATE, SIDE_EFFECT>(initialState)
 }
