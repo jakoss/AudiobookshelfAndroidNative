@@ -56,70 +56,56 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
-    lintChecks("com.slack.lint.compose:compose-lint-checks:1.2.0")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    lintChecks(libs.compose.lint.checks)
 
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.androidx.datastore)
 
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
 
-    implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.8")
+    implementation(libs.timber)
+    implementation(libs.kotlinx.collections.immutable)
 
-    val coroutinesVersion = "1.9.0"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutinesVersion")
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.guava)
 
-    val media3Version = "1.5.0"
-    implementation("androidx.media3:media3-exoplayer:$media3Version")
-    implementation("androidx.media3:media3-exoplayer-hls:$media3Version")
-    implementation("androidx.media3:media3-ui:$media3Version")
-    implementation("androidx.media3:media3-session:$media3Version")
-    implementation("androidx.media3:media3-datasource-okhttp:$media3Version")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.media3.datasource.okhttp)
 
-    val voyagerVersion = "1.0.0"
-    implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
-    implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
-    implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
-    implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
-    implementation("cafe.adriel.voyager:voyager-livedata:$voyagerVersion")
-    implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp.compiler)
 
-    implementation(platform("io.insert-koin:koin-bom:4.0.0"))
-    implementation("io.insert-koin:koin-android")
-    implementation("io.insert-koin:koin-androidx-compose")
-    val koinAnnotationVersion = "1.4.0"
-    implementation("io.insert-koin:koin-annotations:$koinAnnotationVersion")
-    ksp("io.insert-koin:koin-ksp-compiler:$koinAnnotationVersion")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui.core)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material3)
 
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.activity:activity-compose:1.9.3")
-    val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
-    implementation(composeBom)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material3:material3:1.3.1")
+    implementation(libs.orbit.mvi)
 
-    val orbitMviVersion = "9.0.0"
-    implementation("org.orbit-mvi:orbit-compose:$orbitMviVersion")
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    testImplementation(composeBom)
-    androidTestImplementation(composeBom)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.androidx.test.ext.junit)
+//    androidTestImplementation(libs.androidx.test.espresso.core)
+//    testImplementation(platform(libs.androidx.compose.bom))
+//    androidTestImplementation(platform(libs.androidx.compose.bom))
+//    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
