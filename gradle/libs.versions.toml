@@ -21,6 +21,7 @@ orbit-mvi = "9.0.0"
 retrofit = "2.9.0"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 timber = "5.0.1"
+voyager = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
@@ -59,3 +60,7 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-kotlinx-serialization-converter" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 orbit-mvi = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit-mvi" }
+voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
+voyager-transitions = { group = "cafe.adriel.voyager", name = "voyager-transitions", version.ref = "voyager" }
+voyager-screenmodel = { group = "cafe.adriel.voyager", name = "voyager-screenmodel", version.ref = "voyager" }
+voyager-tab-navigator = { group = "cafe.adriel.voyager", name = "voyager-tab-navigator", version.ref = "voyager" }

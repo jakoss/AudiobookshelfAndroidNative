@@ -27,3 +27,4 @@ build
 app/release/
 
 keys/
+/app/signing_key.jks
