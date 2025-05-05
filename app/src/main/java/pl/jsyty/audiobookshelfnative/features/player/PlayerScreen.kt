@@ -46,56 +46,52 @@ class PlayerScreen(private val libraryItemId: String) : Screen {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlayerScreenContent(model: PlayerScreenUiModel) {
     val navigator = LocalNavigator.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = {
-                navigator?.pop()
-            }) {
-                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Go back")
-            }
-            Text(
-                text = model.title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .weight(1f),
-                style = MaterialTheme.typography.headlineMedium,
-            )
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu")
-            }
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = {
+                Text(
+                    text = model.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }, navigationIcon = {
+                IconButton(onClick = {
+                    navigator?.pop()
+                }) {
+                    Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Go back")
+                }
+            })
         }
-
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("${model.serverAddress}api/items/${model.libraryItemId}/cover")
-                .transformations(BlurImageTransformation())
-                .build(),
-            contentDescription = model.title,
-            placeholder = painterResource(id = R.drawable.img_audiobook),
-            fallback = painterResource(id = R.drawable.img_audiobook),
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .weight(1f)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .padding(28.dp)
-        )
+                .fillMaxSize()
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("${model.serverAddress}api/items/${model.libraryItemId}/cover")
+                    .transformations(BlurImageTransformation())
+                    .build(),
+                contentDescription = model.title,
+                placeholder = painterResource(id = R.drawable.img_audiobook),
+                fallback = painterResource(id = R.drawable.img_audiobook),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(8.dp))
+                    .padding(28.dp)
+            )
 
-        PlayerControls(model)
+            PlayerControls(model)
+        }
     }
 }
 

@@ -2,6 +2,7 @@ package pl.jsyty.audiobookshelfnative.features.tabs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,8 +20,12 @@ object TabsScreen : Screen {
     override fun Content() {
         TabNavigator(HomeTab) {
             Scaffold(
-                content = {
-                    Box(modifier = Modifier.padding(it)) {
+                content = { innerPadding ->
+                    Box(
+                        modifier = Modifier
+                            .consumeWindowInsets(innerPadding)
+                            .padding(innerPadding)
+                    ) {
                         CurrentTab()
                     }
                 },

@@ -63,7 +63,7 @@ private fun LoginScreenImpl(
     ) { scaffoldPaddings ->
         FullscreenLoadingAsyncHandler(
             state = state.loginAction,
-            modifier = Modifier.padding(scaffoldPaddings)
+            modifier = Modifier.consumeWindowInsets(scaffoldPaddings)
         ) {
             Box(
                 modifier = Modifier

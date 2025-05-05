@@ -2,10 +2,17 @@ package pl.jsyty.audiobookshelfnative
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import cafe.adriel.voyager.navigator.Navigator
@@ -22,6 +29,7 @@ class MainActivity : ComponentActivity() {
     private val settings by inject<Settings>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         lifecycleScope.launch {
             val token = settings.token.get()
 
@@ -30,12 +38,28 @@ class MainActivity : ComponentActivity() {
             } else {
                 TabsScreen
             }
+
             ensureActive()
 
             setContent {
                 KoinContext {
                     AudiobookshelfNativeTheme {
-                        // A surface container using the 'background' color from the theme
+                        var systemBarStyle by remember {
+                            val defaultSystemBarColor = android.graphics.Color.TRANSPARENT
+                            mutableStateOf(
+                                SystemBarStyle.auto(
+                                    lightScrim = defaultSystemBarColor,
+                                    darkScrim = defaultSystemBarColor
+                                )
+                            )
+                        }
+                        LaunchedEffect(systemBarStyle) {
+                            enableEdgeToEdge(
+                                statusBarStyle = systemBarStyle,
+                                navigationBarStyle = systemBarStyle
+                            )
+                        }
+
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background

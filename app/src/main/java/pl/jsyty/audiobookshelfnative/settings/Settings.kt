@@ -3,11 +3,8 @@ package pl.jsyty.audiobookshelfnative.settings
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 @Single
@@ -18,6 +15,6 @@ class Settings(private val context: Context) {
         context.dataStore
     }
 
-    val token = NullableCachedSettingEntry(store, stringPreferencesKey("token"))
-    val serverAddress = NullableCachedSettingEntry(store, stringPreferencesKey("server_address"))
+    val token = NullableCachedSettingEntry<String>(store, stringPreferencesKey("token"))
+    val serverAddress = NullableCachedSettingEntry<String>(store, stringPreferencesKey("server_address"))
 }

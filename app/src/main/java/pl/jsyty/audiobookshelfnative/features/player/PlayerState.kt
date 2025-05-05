@@ -39,13 +39,8 @@ class PlayerState(
             it.setMediaItem(
                 MediaItem
                     .Builder()
-                    .setRequestMetadata(
-                        MediaItem.RequestMetadata
-                            .Builder()
-                            .setMediaUri(mediaUri.toUri())
-                            .build()
-                    )
                     .setMediaId(id)
+                    .setUri(mediaUri)
                     .setMediaMetadata(
                         MediaMetadata
                             .Builder()

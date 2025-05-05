@@ -14,7 +14,6 @@ import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.*
 import pl.jsyty.audiobookshelfnative.di.AppModule
-import pl.jsyty.audiobookshelfnative.di.networkModule
 import timber.log.Timber
 
 class MyApplication : Application(), SingletonImageLoader.Factory, KoinComponent {
@@ -31,7 +30,6 @@ class MyApplication : Application(), SingletonImageLoader.Factory, KoinComponent
             androidContext(this@MyApplication)
             modules(
                 AppModule().module,
-                networkModule,
             )
         }
     }

@@ -29,3 +29,4 @@ app/release/
 keys/
 /app/signing_key.jks
 /.idea/git_toolbox_prj.xml
+/.kotlin
